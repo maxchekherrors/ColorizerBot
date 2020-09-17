@@ -1,0 +1,12 @@
+'use strict';
+const config = require('./config');
+const {Telegraf} = require('telegraf');
+const session = require('telegraf/session');
+const applayBotMiddleware = require('./botApi');
+const errorMiddleware = require('./middleware/error.midlleware');
+const bot = new Telegraf(`${config.bot.token}`);
+if(config.isTest||config.isDevelopment)bot.use(Telegraf.log());
+bot.use(session());
+bot.use(errorMiddleware);
+applayBotMiddleware(bot);
+module.exports = bot;
