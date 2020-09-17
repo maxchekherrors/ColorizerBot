@@ -13,8 +13,8 @@ exports.getPhoto = async ctx=>{
 	const {photo} = ctx.message;
 	const {message:{from:{id:userId}}} = ctx;
 	const {file_id:fileId} = photo[photo.length-1];
-	await ctx.replyWithHTML('👌🏿');
-	await ctx.replyWithHTML( '<i>I need a little time for this.</i>');
+	await ctx.replyWithHTML('...');
+	await ctx.replyWithHTML( '👌🏿<i>I need a little time for this.</i>');
 	const file = await  ctx.telegram.getFileLink(fileId);
 	const colorizeUrl = await colorize(file);
 	await User.updateOne({_id:userId},{$push:{photos:fileId}});
