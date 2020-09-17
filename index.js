@@ -1,7 +1,7 @@
 'use strict';
 const config = require('./config');
 const Koa = require('koa');
-const helmet = require("koa-helmet")();
+const helmet = require('koa-helmet')();
 const compress = require('koa-compress')();
 const cors = require('@koa/cors')({ allowMethods: ['POST'] });
 const koaBody = require('koa-body')();
