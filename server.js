@@ -5,16 +5,26 @@ const compress = require('koa-compress')();
 const cors = require('@koa/cors')({ allowMethods: ['POST'] });
 const koaBody = require('koa-body')();
 const bot = require('./bot');
+const Router = require('koa-router');
+const fetch = require('node-fetch');
 const app = new Koa();
-app.use(helmet)
-    .use(compress)
-    .use(cors)
-    .use(koaBody);
-app.use(async (ctx) => {
-    if (ctx.method !== 'POST' || ctx.url !== `/${config.bot.password}`) {
-        return;
-    }
+const router = new Router();
+
+router.post(`/${config.bot.password}`,async ctx=>{
     await bot.handleUpdate(ctx.request.body, ctx.response);
     ctx.status = 200;
 });
+router.get('/uploads/:id',async ctx=>{
+    const fileLink = await bot.telegram.getFileLink(ctx.params.id);
+    if(!fileLink) return ctx.status = 404;
+    return  fetch(`${fileLink}`).then(res=>{
+        ctx.type = 'image/png';
+        ctx.body  = res.body;
+    });
+});
+app.use(helmet)
+    .use(compress)
+    .use(cors)
+    .use(koaBody)
+    .use(router.routes());
 module.exports = app;
